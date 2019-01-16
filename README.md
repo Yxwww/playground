@@ -1,1 +1,1 @@
-# wyx-scripts
+# js-practices
