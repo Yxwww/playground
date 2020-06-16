@@ -1,1 +1,1 @@
-export { track } from "./utils";
+export { track } from './utils'
