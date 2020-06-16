@@ -1,7 +1,9 @@
-function Node(val) {
-  this.value = val;
-  this.left = null;
-  this.right = null;
+class Node(val: number) {
+  value: number = NaN;
+  constructor() {
+    this.left = null;
+    this.right = null;
+  }
 }
 
 function BinarySearchTree() {
