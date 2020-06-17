@@ -27,20 +27,33 @@ function createQueue() {
                 current = current.getNext() as Node;
             }
             return arr;
+        },
+        pop(): number | undefined {
+            if (!root) {
+                return;
+            }
+            const rootValue = root.getValue();
+            root = root.getNext()
+            return rootValue;
         }
     }
 }
 
 // tests
 
-Deno.test("hello world", () => {
+Deno.test("push should work as expected", () => {
     const queue = createQueue();
-
     queue.push(5)
     queue.push(1)
     queue.push(6)
-
-
-    const x = 1 + 4;
     assertEquals(queue.toArray(), [5, 1, 6]);
+});
+
+Deno.test("pop should follow FIFO", () => {
+    const queue = createQueue();
+    queue.push(1)
+    queue.push(2)
+    queue.push(3)
+    assertEquals(queue.pop(), 1);
+    assertEquals(queue.toArray(), [2, 3]);
 });
