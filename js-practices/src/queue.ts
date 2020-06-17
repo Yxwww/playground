@@ -4,7 +4,7 @@ import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 function createQueue() {
     let root: Node | undefined;
     return {
-        push(v: number) {
+        enqueue(v: number) {
             if (!root) {
                 root = createNode(v);
                 return;
@@ -28,7 +28,7 @@ function createQueue() {
             }
             return arr;
         },
-        pop(): number | undefined {
+        dequeue(): number | undefined {
             if (!root) {
                 return;
             }
@@ -39,21 +39,58 @@ function createQueue() {
     }
 }
 
+function createArrayQueue() {
+    let head = 0;
+    let tail = -1;
+    let queue: number[] = [];
+    return {
+        enqueue(v: number) {
+            tail ++;
+            queue[tail] = v;
+        },
+        dequeue() {
+            if (tail == -1) {
+                return;
+            }
+            if (head == tail) {
+                const value = queue[head]
+                queue = [];
+                return value;
+            }
+            const headValue = queue[head];
+            head++;
+            return headValue;
+        },
+        toArray() {
+            if (tail == -1) {
+                return [];
+            }
+            console.log('toArray ', head, tail);
+            return queue.slice(head, tail+1); // NOTE: slice second param exclusive
+        }
+    }
+}
+
 // tests
 
-Deno.test("push should work as expected", () => {
-    const queue = createQueue();
-    queue.push(5)
-    queue.push(1)
-    queue.push(6)
-    assertEquals(queue.toArray(), [5, 1, 6]);
-});
+function runTests(queueCreator: () => any) {
+    Deno.test(`${queueCreator.name} enqueue should work as expected`, () => {
+        const queue = queueCreator();
+        queue.enqueue(1)
+        queue.enqueue(2)
+        queue.enqueue(3)
+        assertEquals(queue.toArray(), [1,2,3]);
+    });
 
-Deno.test("pop should follow FIFO", () => {
-    const queue = createQueue();
-    queue.push(1)
-    queue.push(2)
-    queue.push(3)
-    assertEquals(queue.pop(), 1);
-    assertEquals(queue.toArray(), [2, 3]);
-});
+    Deno.test(`${queueCreator.name} dequeue should follow FIFO`, () => {
+        const queue = queueCreator();
+        queue.enqueue(1)
+        queue.enqueue(2)
+        queue.enqueue(3)
+        assertEquals(queue.dequeue(), 1);
+        assertEquals(queue.toArray(), [2, 3]);
+    });
+}
+
+[createQueue, createArrayQueue].forEach(runTests)
+
