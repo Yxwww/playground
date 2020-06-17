@@ -1,4 +1,5 @@
 import {createNode, Node} from "./node.ts";
+import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 
 function createQueue() {
     let root: Node | undefined;
@@ -30,10 +31,16 @@ function createQueue() {
     }
 }
 
-const queue = createQueue();
+// tests
 
-queue.push(5)
-queue.push(1)
-queue.push(6)
+Deno.test("hello world", () => {
+    const queue = createQueue();
 
-console.log(queue.toArray())
+    queue.push(5)
+    queue.push(1)
+    queue.push(6)
+
+
+    const x = 1 + 4;
+    assertEquals(queue.toArray(), [5, 1, 6]);
+});
