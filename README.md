@@ -1,1 +1,2 @@
-# js-practices
+# Playground
+
