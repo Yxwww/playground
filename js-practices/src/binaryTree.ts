@@ -17,7 +17,7 @@ class BinarySearchTree {
     }
     let currentNode = this.root;
     while (currentNode) {
-      const {value: current} = currentNode;
+      const { value: current } = currentNode;
       if (value <= current) {
         if (!currentNode.left) {
           currentNode.left = new Node(value);
@@ -36,7 +36,7 @@ class BinarySearchTree {
     }
   }
   private isRootEmpty() {
-    return typeof this.root === 'undefined';
+    return typeof this.root === "undefined";
   }
   private setRoot(node: Node) {
     this.root = node;
