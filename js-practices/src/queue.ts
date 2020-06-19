@@ -113,6 +113,9 @@ export function createCircularArrayQueue(maxLength = 100): Queue {
       return value;
     },
     toArray() {
+      if (tail == -1) {
+        return [];
+      }
       return tail > head
         ? Array.from(queue.slice(head + 1, tail + 1))
         : Array.from(queue.slice(head + 1)).concat(

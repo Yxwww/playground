@@ -10,6 +10,11 @@ import {
 } from "./queue.ts";
 
 function runTests(queueCreator: () => Queue) {
+  Deno.test(`${queueCreator.name} should be initialized to be empty`, () => {
+    const queue = queueCreator();
+    assertEquals(queue.toArray(), []);
+  });
+
   Deno.test(`${queueCreator.name} enqueue should work as expected`, () => {
     const queue = queueCreator();
     queue.enqueue(1);
@@ -32,6 +37,7 @@ function runTests(queueCreator: () => Queue) {
     queue.enqueue(1);
     assertEquals(queue.dequeue(), 1);
     assertEquals(queue.dequeue(), undefined);
+    assertEquals(queue.toArray(), []);
   });
 }
 
@@ -50,7 +56,7 @@ Deno.test("createCircularArrayQueue .enqueue throw when array is full", () => {
     circularQueue.enqueue(4);
   });
 });
-//
+
 Deno.test("createCircularArrayQueue .enqueue circle back to beginning", () => {
   const circularQueue = createCircularArrayQueue(3);
   circularQueue.enqueue(1);
