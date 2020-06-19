@@ -44,33 +44,29 @@ export function createQueue(): Queue {
   };
 }
 
+// Queue implementation with Dynamic array
 export function createArrayQueue(): Queue {
   let head = 0;
-  let tail = -1;
+  let tail = 0;
   let queue: number[] = [];
   return {
     enqueue(v: number) {
-      tail++;
       queue[tail] = v;
+      tail++;
     },
     dequeue() {
-      if (tail == -1) {
-        return;
-      }
-      if (head == tail) {
-        const value = queue[head];
+      if (tail == 0 || head == tail) {
         queue = [];
-        return value;
+        return;
       }
       const headValue = queue[head];
       head++;
       return headValue;
     },
     toArray() {
-      if (tail == -1) {
+      if (tail == head) {
         return [];
       }
-      console.log("toArray ", head, tail);
       return queue.slice(head, tail + 1); // NOTE: slice second param exclusive
     },
   };
@@ -78,46 +74,50 @@ export function createArrayQueue(): Queue {
 
 // Circular Queue
 // - a fixed sized array
-// - two pointers 
+// - two pointers
 // - reuse storage to avoid waste space
 export function createCircularArrayQueue(maxLength = 100): Queue {
-    let head = 0;
-    let tail = 0;
-    const queue = new Float32Array(100);
-    function length() {
-        return tail >= head ? tail - head: maxLength - head + tail ;
-    }
-    function isFull(): boolean {
-        return length() >= maxLength;
-    }
-    function isEmpty(): boolean {
-        return length() == 0;
-    }
-    // function isEmpty() {
-    //     return (head > tail) ? 
-    // }
-    return {
-        enqueue(v: number) {
-            if (isFull()) {
-                throw new Error('queue is full')
-            }
-            queue[tail] = v;
-            if (tail == maxLength) {
-                tail = 0;
-            } else {
-                tail ++;
-            }
-        },
-        dequeue() {
-            if (isEmpty()) {
-                return;
-            }
-            const value = queue[head];
-            head ++;
-            return value;
-        },
-        toArray() {
-            return tail > head ? Array.from(queue.slice(head, tail)) : Array.from(queue.slice(head)).concat(Array.from(queue.slice(0, tail)))
-        },
-    };
+  let head = 0;
+  let tail = 0;
+  let next = 0; // can avoid having this counter ?
+  const queue = new Float32Array(maxLength);
+  function length() {
+    return tail >= head ? tail - head : maxLength - head + tail;
+  }
+  function isFull(): boolean {
+    return length() >= maxLength;
+  }
+  function isEmpty(): boolean {
+    return length() == 0;
+  }
+  return {
+    enqueue(v: number) {
+      if (isFull()) {
+        throw new Error("queue is full");
+      }
+      console.log("enqueue", tail, v);
+      tail = next;
+      queue[tail] = v;
+      if (tail == maxLength - 1) {
+        next = 0;
+      } else {
+        next++;
+      }
+    },
+    dequeue() {
+      if (isEmpty()) {
+        return;
+      }
+      const value = queue[head];
+      head++;
+      return value;
+    },
+    toArray() {
+      return tail >= head
+        ? Array.from(queue.slice(head, tail))
+        : Array.from(queue.slice(0, tail + 1)).concat(
+          Array.from(queue.slice(head)),
+        );
+    },
+  };
 }
