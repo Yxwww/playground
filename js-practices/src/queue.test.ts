@@ -1,7 +1,7 @@
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
-import { createQueue, createArrayQueue } from "./queue.ts";
+import { createQueue, createArrayQueue, createCircularArrayQueue, Queue } from "./queue.ts";
 
-function runTests(queueCreator: () => any) {
+function runTests(queueCreator: () => Queue) {
   Deno.test(`${queueCreator.name} enqueue should work as expected`, () => {
     const queue = queueCreator();
     queue.enqueue(1);
@@ -20,4 +20,4 @@ function runTests(queueCreator: () => any) {
   });
 }
 
-[createQueue, createArrayQueue].forEach(runTests);
+[createQueue, createArrayQueue, createCircularArrayQueue].forEach(runTests);
