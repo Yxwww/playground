@@ -77,17 +77,19 @@ export function createArrayQueue(): Queue {
 // - two pointers
 // - reuse storage to avoid waste space
 export function createCircularArrayQueue(maxLength = 100): Queue {
-  let head = 0;
-  let tail = 0;
-  let next = 0; // can avoid having this counter ?
+  let head = -1;
+  let tail = -1;
   const queue = new Float32Array(maxLength);
   function length() {
-    return tail >= head ? tail - head : maxLength - head + tail;
+    return tail >= head ? (tail - head) : maxLength - head + tail;
   }
   function isFull(): boolean {
     return length() >= maxLength;
   }
   function isEmpty(): boolean {
+    if (tail == -1) {
+      return true;
+    }
     return length() == 0;
   }
   return {
@@ -95,27 +97,26 @@ export function createCircularArrayQueue(maxLength = 100): Queue {
       if (isFull()) {
         throw new Error("queue is full");
       }
-      tail = next;
-      queue[tail] = v;
       if (tail == maxLength - 1) {
-        next = 0;
+        tail = 0;
       } else {
-        next++;
+        tail++;
       }
+      queue[tail] = v;
     },
     dequeue() {
       if (isEmpty()) {
         return;
       }
-      const value = queue[head];
       head++;
+      const value = queue[head];
       return value;
     },
     toArray() {
-      return tail >= head
-        ? Array.from(queue.slice(head, tail))
-        : Array.from(queue.slice(0, tail + 1)).concat(
-          Array.from(queue.slice(head)),
+      return tail > head
+        ? Array.from(queue.slice(head + 1, tail + 1))
+        : Array.from(queue.slice(head + 1)).concat(
+          Array.from(queue.slice(0, tail + 1)),
         );
     },
   };

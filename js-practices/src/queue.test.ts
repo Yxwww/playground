@@ -35,7 +35,11 @@ function runTests(queueCreator: () => Queue) {
   });
 }
 
-[createQueue, createArrayQueue, createCircularArrayQueue].forEach(runTests);
+[
+  createQueue,
+  createArrayQueue,
+  createCircularArrayQueue,
+].forEach(runTests);
 
 Deno.test("createCircularArrayQueue .enqueue throw when array is full", () => {
   const circularQueue = createCircularArrayQueue(3);
@@ -46,7 +50,7 @@ Deno.test("createCircularArrayQueue .enqueue throw when array is full", () => {
     circularQueue.enqueue(4);
   });
 });
-
+//
 Deno.test("createCircularArrayQueue .enqueue circle back to beginning", () => {
   const circularQueue = createCircularArrayQueue(3);
   circularQueue.enqueue(1);
@@ -55,5 +59,5 @@ Deno.test("createCircularArrayQueue .enqueue circle back to beginning", () => {
 
   circularQueue.dequeue();
   circularQueue.enqueue(4);
-  assertEquals(circularQueue.toArray(), [4, 2, 3]);
+  assertEquals(circularQueue.toArray(), [2, 3, 4]);
 });
