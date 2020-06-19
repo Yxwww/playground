@@ -95,7 +95,6 @@ export function createCircularArrayQueue(maxLength = 100): Queue {
       if (isFull()) {
         throw new Error("queue is full");
       }
-      console.log("enqueue", tail, v);
       tail = next;
       queue[tail] = v;
       if (tail == maxLength - 1) {
