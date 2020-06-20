@@ -76,20 +76,74 @@ export function createArrayQueue(): Queue {
 // - a fixed sized array
 // - two pointers
 // - reuse storage to avoid waste space
+// export function createCircularArrayQueue(maxLength = 100): Queue {
+//   let head = -1;
+//   let tail = -1;
+//   const queue = new Float32Array(maxLength);
+//   function length() {
+//     return tail >= head ? (tail - head) : maxLength - head + tail;
+//   }
+//   function isFull(): boolean {
+//     return length() >= maxLength;
+//   }
+//   function isEmpty(): boolean {
+//     if (tail == -1) {
+//       return true;
+//     }
+//     return length() == 0;
+//   }
+//   return {
+//     enqueue(v: number) {
+//       if (isFull()) {
+//         throw new Error("queue is full");
+//       }
+//       if (tail == maxLength - 1) {
+//         tail = 0;
+//       } else {
+//         tail++;
+//       }
+//       queue[tail] = v;
+//     },
+//     dequeue() {
+//       if (isEmpty()) {
+//         return;
+//       }
+//       head++;
+//       const value = queue[head];
+//       return value;
+//     },
+//     toArray() {
+//       if (tail == -1) {
+//         return [];
+//       }
+//       return tail > head
+//         ? Array.from(queue.slice(head + 1, tail + 1))
+//         : Array.from(queue.slice(head + 1)).concat(
+//           Array.from(queue.slice(0, tail + 1)),
+//         );
+//     },
+//   };
+// }
+
+
+
 export function createCircularArrayQueue(maxLength = 100): Queue {
   let head = -1;
   let tail = -1;
+  let next = tail + 1;
+  let nextHead = head + 1;
   const queue = new Float32Array(maxLength);
   function length() {
-    return tail >= head ? (tail - head) : maxLength - head + tail;
+      if (tail== -1) {
+          return 0
+      }
+    return tail >= head ? (tail  - head) : maxLength - head + tail;
   }
   function isFull(): boolean {
-    return length() >= maxLength;
+      return length() >= maxLength;
   }
   function isEmpty(): boolean {
-    if (tail == -1) {
-      return true;
-    }
+    console.log('isEmpty', {head, tail}, length());
     return length() == 0;
   }
   return {
@@ -97,29 +151,30 @@ export function createCircularArrayQueue(maxLength = 100): Queue {
       if (isFull()) {
         throw new Error("queue is full");
       }
-      if (tail == maxLength - 1) {
-        tail = 0;
-      } else {
-        tail++;
+
+      console.log('enqueue', v, 'index',next);
+      queue[next] = v;
+      tail = next;
+      next ++
+      if (next === maxLength) {
+          next = 0;
       }
-      queue[tail] = v;
     },
     dequeue() {
       if (isEmpty()) {
         return;
       }
-      head++;
-      const value = queue[head];
+      const value = queue[nextHead];
+      head = nextHead;
+      nextHead ++
       return value;
     },
     toArray() {
-      if (tail == -1) {
-        return [];
-      }
-      return tail > head
-        ? Array.from(queue.slice(head + 1, tail + 1))
-        : Array.from(queue.slice(head + 1)).concat(
-          Array.from(queue.slice(0, tail + 1)),
+      console.log('toArray',{head, tail}, length(), queue.slice(0, 10));
+      return tail >= head
+        ? Array.from(queue.slice(head+1, tail + 1))
+        : Array.from(queue.slice(head)).concat(
+          Array.from(queue.slice(0, tail)),
         );
     },
   };

@@ -31,7 +31,7 @@ function runTests(queueCreator: () => Queue) {
     assertEquals(queue.dequeue(), 1);
     assertEquals(queue.toArray(), [2, 3]);
   });
-
+  //
   Deno.test(`${queueCreator.name} dequeue should return undefined if array is empty`, () => {
     const queue = queueCreator();
     queue.enqueue(1);
@@ -42,8 +42,8 @@ function runTests(queueCreator: () => Queue) {
 }
 
 [
-  createQueue,
-  createArrayQueue,
+  // createQueue,
+  // createArrayQueue,
   createCircularArrayQueue,
 ].forEach(runTests);
 
@@ -56,6 +56,7 @@ Deno.test("createCircularArrayQueue .enqueue throw when array is full", () => {
     circularQueue.enqueue(4);
   });
 });
+
 
 Deno.test("createCircularArrayQueue .enqueue circle back to beginning", () => {
   const circularQueue = createCircularArrayQueue(3);
