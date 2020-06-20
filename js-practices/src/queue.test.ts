@@ -66,3 +66,15 @@ Deno.test("createCircularArrayQueue .enqueue circle back to beginning", () => {
   circularQueue.enqueue(4);
   assertEquals(circularQueue.toArray(), [2, 3, 4]);
 });
+Deno.test("createCircularArrayQueue .dequeue circle back to beginning", () => {
+  const circularQueue = createCircularArrayQueue(3);
+  circularQueue.enqueue(1);
+  circularQueue.enqueue(2);
+  circularQueue.enqueue(3);
+  circularQueue.dequeue();
+  circularQueue.dequeue();
+  circularQueue.dequeue();
+  circularQueue.enqueue(4);
+  circularQueue.dequeue();
+  assertEquals(circularQueue.toArray(), []);
+});

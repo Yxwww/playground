@@ -151,6 +151,7 @@ export function createCircularArrayQueue(maxLength = 100): Queue {
     return tail > head ? (tail - head) : maxLength - head + tail;
   }
   function isFull(): boolean {
+      console.log({head, tail}, length());
     return length() >= maxLength;
   }
   function isEmpty(): boolean {
@@ -161,14 +162,13 @@ export function createCircularArrayQueue(maxLength = 100): Queue {
       if (isFull()) {
         throw new Error("queue is full");
       }
-      console.log("+ ", v, tail);
       let isTailUpdated = false;
       if (tail === maxLength) {
         tail = 0;
         isTailUpdated = true;
       }
       queue[tail] = v;
-      if (!isTailUpdated) {
+      if (!isTailUpdated) { // prevent double update
         tail++;
       }
     },
@@ -176,8 +176,15 @@ export function createCircularArrayQueue(maxLength = 100): Queue {
       if (isEmpty()) {
         return;
       }
+      let isHeadUpdated = false;
+      if (head == maxLength) {
+          head = 0
+          isHeadUpdated = true
+      }
       const value = queue[head];
-      head++;
+      if (!isHeadUpdated) {
+        head++;
+      }
       return value;
     },
     toArray() {
