@@ -1,0 +1,10 @@
+language: node_js
+
+language: python
+
+install:
+  - curl -L https://deno.land/x/install/install.sh | sh -s v1.0.0
+  - export PATH="$HOME/.deno/bin:$PATH"
+
+script:
+  - deno test --allow-env --allow-read --allow-net --allow-write js-practices/src
