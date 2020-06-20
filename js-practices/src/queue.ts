@@ -72,10 +72,7 @@ export function createArrayQueue(): Queue {
   };
 }
 
-// Circular Queue
-// - a fixed sized array
-// - two pointers
-// - reuse storage to avoid waste space
+// incorrect implementation of circular queue 
 // export function createCircularArrayQueue(maxLength = 100): Queue {
 //   let head = -1;
 //   let tail = -1;
@@ -125,8 +122,26 @@ export function createArrayQueue(): Queue {
 //   };
 // }
 
+// Circular Queue
+// - a fixed sized array
+// - two pointers
+// - reuse storage to avoid waste space
+/**
+ * Respect the true position of H and T. Always keep track of them to make sure they are at the correct
+ * position at all times. It's vital for computing length() and enqueue and dequeue methods.
+ * It's logical to gives their starting postion to both be 0 and increment during dequeue and enqueue. Next question
+ * can be - what does it mean when H == T? the logical conclusion is when H == T, the length of the queue is 0.
+ * Hence length() first two lines. In order to implement enqueue/dequeue function we have to know whether
+ * there is room to add or remove. So, we wrap up length() with the correct logic handling different H and T
+ * positions. It's the key for circular queue since H and T
+ * can go back to the beginning of the array. Once length() computes correctly, we can
+ * implement enqueue and dequeue. We have to be careful when to set the H or T back to beginning.
+ * Other gotchas:
+ * - make sure to handle reseting T back to beginning to reset before assgining the value to index, since tail is where the next tail should go
+ **/
+
 export function createCircularArrayQueue(maxLength = 100): Queue {
-  let head = 0;
+  let head = 0; 
   let tail = 0;
   const queue = new Float32Array(maxLength);
   function length() {
@@ -139,7 +154,6 @@ export function createCircularArrayQueue(maxLength = 100): Queue {
     return length() >= maxLength;
   }
   function isEmpty(): boolean {
-    console.log("isEmpty", { head, tail }, length());
     return length() == 0;
   }
   return {
