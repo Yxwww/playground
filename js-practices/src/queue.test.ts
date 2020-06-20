@@ -42,8 +42,8 @@ function runTests(queueCreator: () => Queue) {
 }
 
 [
-  // createQueue,
-  // createArrayQueue,
+  createQueue,
+  createArrayQueue,
   createCircularArrayQueue,
 ].forEach(runTests);
 
@@ -56,7 +56,6 @@ Deno.test("createCircularArrayQueue .enqueue throw when array is full", () => {
     circularQueue.enqueue(4);
   });
 });
-
 
 Deno.test("createCircularArrayQueue .enqueue circle back to beginning", () => {
   const circularQueue = createCircularArrayQueue(3);

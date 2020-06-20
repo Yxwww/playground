@@ -125,23 +125,21 @@ export function createArrayQueue(): Queue {
 //   };
 // }
 
-
-
 export function createCircularArrayQueue(maxLength = 100): Queue {
   let head = 0;
   let tail = 0;
   const queue = new Float32Array(maxLength);
   function length() {
-      if (tail == head) {
-          return 0
-      }
-    return tail > head ? (tail  - head) : maxLength - head + tail;
+    if (tail == head) {
+      return 0;
+    }
+    return tail > head ? (tail - head) : maxLength - head + tail;
   }
   function isFull(): boolean {
-      return length() >= maxLength;
+    return length() >= maxLength;
   }
   function isEmpty(): boolean {
-    console.log('isEmpty', {head, tail}, length());
+    console.log("isEmpty", { head, tail }, length());
     return length() == 0;
   }
   return {
@@ -149,15 +147,15 @@ export function createCircularArrayQueue(maxLength = 100): Queue {
       if (isFull()) {
         throw new Error("queue is full");
       }
-      console.log('+ ', v, tail);
+      console.log("+ ", v, tail);
       let isTailUpdated = false;
       if (tail === maxLength) {
-          tail = 0;
-          isTailUpdated = true;
+        tail = 0;
+        isTailUpdated = true;
       }
       queue[tail] = v;
       if (!isTailUpdated) {
-        tail ++
+        tail++;
       }
     },
     dequeue() {
@@ -165,18 +163,18 @@ export function createCircularArrayQueue(maxLength = 100): Queue {
         return;
       }
       const value = queue[head];
-      head ++;
+      head++;
       return value;
     },
     toArray() {
-      console.log('toArray',{head, tail}, length(), queue.slice(0, 10));
-      if(isEmpty()) {
-          return [];
+      console.log("toArray", { head, tail }, length(), queue.slice(0, 10));
+      if (isEmpty()) {
+        return [];
       }
       return tail >= head
         ? Array.from(queue.slice(head, tail))
         : Array.from(queue.slice(head)).concat(
-          Array.from(queue.slice(0, tail+1)),
+          Array.from(queue.slice(0, tail + 1)),
         );
     },
   };
