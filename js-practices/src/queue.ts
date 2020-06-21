@@ -72,7 +72,7 @@ export function createArrayQueue(): Queue {
   };
 }
 
-// incorrect implementation of circular queue 
+// incorrect implementation of circular queue
 // export function createCircularArrayQueue(maxLength = 100): Queue {
 //   let head = -1;
 //   let tail = -1;
@@ -141,7 +141,7 @@ export function createArrayQueue(): Queue {
  **/
 
 export function createCircularArrayQueue(maxLength = 100): Queue {
-  let head = 0; 
+  let head = 0;
   let tail = 0;
   const queue = new Float32Array(maxLength);
   function length() {
@@ -151,7 +151,6 @@ export function createCircularArrayQueue(maxLength = 100): Queue {
     return tail > head ? (tail - head) : maxLength - head + tail;
   }
   function isFull(): boolean {
-      console.log({head, tail}, length());
     return length() >= maxLength;
   }
   function isEmpty(): boolean {
@@ -178,8 +177,8 @@ export function createCircularArrayQueue(maxLength = 100): Queue {
       }
       let isHeadUpdated = false;
       if (head == maxLength) {
-          head = 0
-          isHeadUpdated = true
+        head = 0;
+        isHeadUpdated = true;
       }
       const value = queue[head];
       if (!isHeadUpdated) {
@@ -188,7 +187,6 @@ export function createCircularArrayQueue(maxLength = 100): Queue {
       return value;
     },
     toArray() {
-      console.log("toArray", { head, tail }, length(), queue.slice(0, 10));
       if (isEmpty()) {
         return [];
       }
