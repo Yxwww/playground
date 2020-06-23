@@ -4,11 +4,25 @@ export interface Queue {
   enqueue(v: number): void;
   dequeue(): number | undefined;
   toArray(): number[];
+  length(): number;
 }
 
 export function createQueue(): Queue {
   let root: Node | undefined;
   return {
+      length(){
+          let sum = 0;
+          if (!root) {
+              return 0;
+          }
+          let current = root;
+          while (current) {
+              sum ++;
+              current = current.getNext() as Node;
+          }
+          return sum;
+      },
+
     enqueue(v: number) {
       if (!root) {
         root = createNode(v);
@@ -50,12 +64,16 @@ export function createArrayQueue(): Queue {
   let tail = 0;
   let queue: number[] = [];
   return {
+      length() {
+          return queue.length - head;
+      },
     enqueue(v: number) {
       queue[tail] = v;
       tail++;
     },
     dequeue() {
       if (tail == 0 || head == tail) {
+        head = 0;
         queue = [];
         return;
       }
@@ -71,56 +89,6 @@ export function createArrayQueue(): Queue {
     },
   };
 }
-
-// incorrect implementation of circular queue
-// export function createCircularArrayQueue(maxLength = 100): Queue {
-//   let head = -1;
-//   let tail = -1;
-//   const queue = new Float32Array(maxLength);
-//   function length() {
-//     return tail >= head ? (tail - head) : maxLength - head + tail;
-//   }
-//   function isFull(): boolean {
-//     return length() >= maxLength;
-//   }
-//   function isEmpty(): boolean {
-//     if (tail == -1) {
-//       return true;
-//     }
-//     return length() == 0;
-//   }
-//   return {
-//     enqueue(v: number) {
-//       if (isFull()) {
-//         throw new Error("queue is full");
-//       }
-//       if (tail == maxLength - 1) {
-//         tail = 0;
-//       } else {
-//         tail++;
-//       }
-//       queue[tail] = v;
-//     },
-//     dequeue() {
-//       if (isEmpty()) {
-//         return;
-//       }
-//       head++;
-//       const value = queue[head];
-//       return value;
-//     },
-//     toArray() {
-//       if (tail == -1) {
-//         return [];
-//       }
-//       return tail > head
-//         ? Array.from(queue.slice(head + 1, tail + 1))
-//         : Array.from(queue.slice(head + 1)).concat(
-//           Array.from(queue.slice(0, tail + 1)),
-//         );
-//     },
-//   };
-// }
 
 // Circular Queue
 // - a fixed sized array
@@ -196,5 +164,6 @@ export function createCircularArrayQueue(maxLength = 100): Queue {
           Array.from(queue.slice(0, tail + 1)),
         );
     },
+    length
   };
 }

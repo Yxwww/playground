@@ -13,6 +13,7 @@ function runTests(queueCreator: () => Queue) {
   Deno.test(`${queueCreator.name} should be initialized to be empty`, () => {
     const queue = queueCreator();
     assertEquals(queue.toArray(), []);
+    assertEquals(queue.length(), 0);
   });
 
   Deno.test(`${queueCreator.name} enqueue should work as expected`, () => {
@@ -21,6 +22,7 @@ function runTests(queueCreator: () => Queue) {
     queue.enqueue(2);
     queue.enqueue(3);
     assertEquals(queue.toArray(), [1, 2, 3]);
+    assertEquals(queue.length(), 3);
   });
 
   Deno.test(`${queueCreator.name} dequeue should follow FIFO`, () => {
@@ -30,6 +32,7 @@ function runTests(queueCreator: () => Queue) {
     queue.enqueue(3);
     assertEquals(queue.dequeue(), 1);
     assertEquals(queue.toArray(), [2, 3]);
+    assertEquals(queue.length(), 2);
   });
   //
   Deno.test(`${queueCreator.name} dequeue should return undefined if array is empty`, () => {
@@ -38,6 +41,7 @@ function runTests(queueCreator: () => Queue) {
     assertEquals(queue.dequeue(), 1);
     assertEquals(queue.dequeue(), undefined);
     assertEquals(queue.toArray(), []);
+    assertEquals(queue.length(), 0);
   });
 }
 
