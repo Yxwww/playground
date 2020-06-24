@@ -10,18 +10,18 @@ export interface Queue {
 export function createQueue(): Queue {
   let root: Node | undefined;
   return {
-      length(){
-          let sum = 0;
-          if (!root) {
-              return 0;
-          }
-          let current = root;
-          while (current) {
-              sum ++;
-              current = current.getNext() as Node;
-          }
-          return sum;
-      },
+    length() {
+      let sum = 0;
+      if (!root) {
+        return 0;
+      }
+      let current = root;
+      while (current) {
+        sum++;
+        current = current.getNext() as Node;
+      }
+      return sum;
+    },
 
     enqueue(v: number) {
       if (!root) {
@@ -64,9 +64,9 @@ export function createArrayQueue(): Queue {
   let tail = 0;
   let queue: number[] = [];
   return {
-      length() {
-          return queue.length - head;
-      },
+    length() {
+      return queue.length - head;
+    },
     enqueue(v: number) {
       queue[tail] = v;
       tail++;
@@ -164,6 +164,67 @@ export function createCircularArrayQueue(maxLength = 100): Queue {
           Array.from(queue.slice(0, tail + 1)),
         );
     },
-    length
+    length,
+  };
+}
+
+/**
+ * Answer approach from leetcode
+ * - Queue is good to start as -1 as a initial state, becareful when to reset it back to -1 tho.
+ * - (tail + 1) % size == head is a better way to check whether the queue is full
+ */
+export function createQueueAnswer(size = 100): Queue {
+  let head = -1;
+  let tail = -1;
+  const queue = new Float32Array(size);
+  function isFull(): boolean {
+    return (tail + 1) % size == head;
+  }
+  function isEmpty(): boolean {
+    return head == -1;
+  }
+  function length() {
+    if (isEmpty()) {
+      return 0;
+    }
+    return tail >= head ? tail - head + 1 : size - head + tail;
+  }
+  return {
+    length,
+    enqueue(v: number) {
+      if (isFull()) {
+        throw new Error("queue is full");
+      }
+      if (isEmpty()) {
+        head = 0;
+      }
+      tail = (tail + 1) % size;
+      queue[tail] = v;
+      return true;
+    },
+    dequeue() {
+      if (isEmpty()) {
+        return;
+      }
+      const headValue = queue[head];
+      if (head == tail) {
+        head = -1;
+        tail = -1;
+        return headValue;
+      }
+      head = (head + 1) % size;
+      return headValue;
+    },
+    toArray() {
+      if (isEmpty()) {
+        return [];
+      }
+      console.log(head, tail);
+      return tail >= head
+        ? Array.from(queue.slice(head, tail + 1))
+        : Array.from(queue.slice(head)).concat(
+          Array.from(queue.slice(0, tail + 1)),
+        );
+    },
   };
 }

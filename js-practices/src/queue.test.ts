@@ -7,6 +7,7 @@ import {
   createArrayQueue,
   createCircularArrayQueue,
   Queue,
+  createQueueAnswer,
 } from "./queue.ts";
 
 function runTests(queueCreator: () => Queue) {
@@ -49,36 +50,42 @@ function runTests(queueCreator: () => Queue) {
   createQueue,
   createArrayQueue,
   createCircularArrayQueue,
+  createQueueAnswer,
 ].forEach(runTests);
 
-Deno.test("createCircularArrayQueue .enqueue throw when array is full", () => {
-  const circularQueue = createCircularArrayQueue(3);
-  circularQueue.enqueue(1);
-  circularQueue.enqueue(2);
-  circularQueue.enqueue(3);
-  assertThrows(() => {
-    circularQueue.enqueue(4);
+function circularQueueTest(queueCreator: (size: number) => Queue) {
+  Deno.test(`${queueCreator.name} .enqueue throw when array is full`, () => {
+    const circularQueue = queueCreator(3);
+    circularQueue.enqueue(1);
+    circularQueue.enqueue(2);
+    circularQueue.enqueue(3);
+    assertThrows(() => {
+      circularQueue.enqueue(4);
+    });
   });
-});
 
-Deno.test("createCircularArrayQueue .enqueue circle back to beginning", () => {
-  const circularQueue = createCircularArrayQueue(3);
-  circularQueue.enqueue(1);
-  circularQueue.enqueue(2);
-  circularQueue.enqueue(3);
-  circularQueue.dequeue();
-  circularQueue.enqueue(4);
-  assertEquals(circularQueue.toArray(), [2, 3, 4]);
-});
-Deno.test("createCircularArrayQueue .dequeue circle back to beginning", () => {
-  const circularQueue = createCircularArrayQueue(3);
-  circularQueue.enqueue(1);
-  circularQueue.enqueue(2);
-  circularQueue.enqueue(3);
-  circularQueue.dequeue();
-  circularQueue.dequeue();
-  circularQueue.dequeue();
-  circularQueue.enqueue(4);
-  circularQueue.dequeue();
-  assertEquals(circularQueue.toArray(), []);
-});
+  Deno.test(`${queueCreator.name} .enqueue circle back to beginning`, () => {
+    const circularQueue = queueCreator(3);
+    circularQueue.enqueue(1);
+    circularQueue.enqueue(2);
+    circularQueue.enqueue(3);
+    circularQueue.dequeue();
+    circularQueue.enqueue(4);
+    assertEquals(circularQueue.toArray(), [2, 3, 4]);
+  });
+  Deno.test(`${queueCreator.name} .dequeue circle back to beginning`, () => {
+    const circularQueue = queueCreator(3);
+    circularQueue.enqueue(1);
+    circularQueue.enqueue(2);
+    circularQueue.enqueue(3);
+    circularQueue.dequeue();
+    circularQueue.dequeue();
+    circularQueue.dequeue();
+    circularQueue.enqueue(4);
+    circularQueue.dequeue();
+    assertEquals(circularQueue.toArray(), []);
+  });
+}
+
+circularQueueTest(createCircularArrayQueue);
+circularQueueTest(createQueueAnswer);
