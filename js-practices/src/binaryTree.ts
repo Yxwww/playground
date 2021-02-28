@@ -1,17 +1,17 @@
-class Node {
+class BFSNode {
   value = NaN;
-  left: Node | undefined;
-  right: Node | undefined;
+  left: BFSNode | undefined;
+  right: BFSNode | undefined;
   constructor(value: number) {
     this.value = value;
   }
 }
 
 class BinarySearchTree {
-  root: Node | undefined;
+  root: BFSNode | undefined;
   push(value: number): void {
     if (this.isRootEmpty()) {
-      const newNode = new Node(value);
+      const newNode = new BFSNode(value);
       this.setRoot(newNode);
       return;
     }
@@ -20,14 +20,14 @@ class BinarySearchTree {
       const { value: current } = currentNode;
       if (value <= current) {
         if (!currentNode.left) {
-          currentNode.left = new Node(value);
+          currentNode.left = new BFSNode(value);
           break;
         } else {
           currentNode = currentNode.left;
         }
       } else {
         if (!currentNode.right) {
-          currentNode.right = new Node(value);
+          currentNode.right = new BFSNode(value);
           break;
         } else {
           currentNode = currentNode.right;
@@ -38,8 +38,8 @@ class BinarySearchTree {
   private isRootEmpty() {
     return typeof this.root === "undefined";
   }
-  private setRoot(node: Node) {
-    this.root = node;
+  private setRoot(N: BFSNode) {
+    this.root = N;
   }
 }
 
