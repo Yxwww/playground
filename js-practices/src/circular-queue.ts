@@ -1,7 +1,7 @@
-function createQueue(size: number) {
+export function createQueue<T>(size: number) {
   let head = 0
   let tail = 0
-  const arr = new Float32Array(size)
+  const arr = new Array(size)
   function isFull() {
     return tail - head >= size
   }
@@ -9,7 +9,7 @@ function createQueue(size: number) {
     return tail - head <= 0
   }
   return {
-    enqueue(v: number) {
+    enqueue(v: T) {
       if (isFull()) {
         throw new Error('queue is full')
       }
@@ -20,7 +20,7 @@ function createQueue(size: number) {
       }
       tail++
     },
-    dequeue() {
+    dequeue(): T {
       if (isEmpty()) {
         throw new Error('queue is empty')
       }
@@ -49,15 +49,18 @@ function createQueue(size: number) {
   }
 }
 
-const queue = createQueue(5)
-queue.enqueue(1)
-queue.enqueue(2)
-queue.enqueue(3)
-queue.enqueue(4)
-queue.enqueue(5)
-console.log('dequeue: ', queue.dequeue())
-console.log('dequeue: ', queue.dequeue())
-console.log('dequeue: ', queue.dequeue())
-console.log('dequeue: ', queue.dequeue())
-console.log('dequeue: ', queue.dequeue())
-console.log(queue.getState())
+function test() {
+  const queue = createQueue(5)
+  queue.enqueue(1)
+  queue.enqueue(2)
+  queue.enqueue(3)
+  queue.enqueue(4)
+  queue.enqueue(5)
+  console.log('dequeue: ', queue.dequeue())
+  console.log('dequeue: ', queue.dequeue())
+  console.log('dequeue: ', queue.dequeue())
+  console.log('dequeue: ', queue.dequeue())
+  console.log('dequeue: ', queue.dequeue())
+  console.log(queue.getState())
+}
+export type Queue = ReturnType<typeof createQueue>
