@@ -1,14 +1,7 @@
 import { createNode, Node } from "./node.ts";
 
-export interface Queue<T> {
-  enqueue(v: T): void;
-  dequeue(): T | undefined;
-  toArray(): T[];
-  length(): number;
-  isEmpty(): boolean;
-}
 
-export function createQueue<T>(): Queue<T> {
+export function createQueue<T>() {
   let root: Node<T> | undefined;
   function  length() {
       let sum = 0;
@@ -238,3 +231,5 @@ export function createQueueAnswer(size = 100): Queue<number> {
     },
   };
 }
+
+export type Queue = ReturnType<typeof createQueue>;

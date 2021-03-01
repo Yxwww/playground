@@ -41,6 +41,15 @@ class BinarySearchTree {
   private setRoot(N: BFSNode) {
     this.root = N;
   }
+  walk(cb: (node: T) => void) {
+      if(this.isRootEmpty()) {
+          return;
+      }
+      const result = [];
+      do {
+          result.push([this.root.left, this.root.right])
+      } while()
+  }
 }
 
 const tree = new BinarySearchTree();
