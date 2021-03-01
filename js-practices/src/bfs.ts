@@ -81,6 +81,7 @@ class BTree {
 
   bfs(target: number) {
     const queue = createQueue<BNode | undefined>(500)
+    const data = []
     let steps = 0
     queue.enqueue(this.root)
     let current = queue.dequeue()
@@ -101,7 +102,9 @@ class BTree {
       }
       current = queue.dequeue()
     }
-    return steps
+    return {
+      steps,
+    }
   }
 
   findPushPos(

@@ -7,7 +7,7 @@ class BFSNode {
   }
 }
 
-class BinarySearchTree {
+export class BinarySearchTree {
   root: BFSNode | undefined;
   push(value: number): void {
     if (this.isRootEmpty()) {
