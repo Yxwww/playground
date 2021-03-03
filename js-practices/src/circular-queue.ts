@@ -20,9 +20,9 @@ export function createQueue<T>(size: number) {
       }
       tail++
     },
-    dequeue(): T {
+    dequeue(): T | undefined {
       if (isEmpty()) {
-        throw new Error('queue is empty')
+        return undefined
       }
       const result = arr[head]
       if (head === size) {

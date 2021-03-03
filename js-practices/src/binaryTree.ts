@@ -1,3 +1,5 @@
+import { createQueue } from './circular-queue.ts';
+
 class BFSNode {
   value = NaN;
   left: BFSNode | undefined;
@@ -41,14 +43,19 @@ export class BinarySearchTree {
   private setRoot(N: BFSNode) {
     this.root = N;
   }
-  walk(cb: (node: T) => void) {
-      if(this.isRootEmpty()) {
-          return;
+  traverseBFS() {
+      let current = this.root;
+      const queue = createQueue<BFSNode>(100);
+      while(current) {
+        console.log('current:', current.value);
+          if (current.left) {
+              queue.enqueue(current.left);
+          }
+          if (current.right) {
+              queue.enqueue(current.right);
+          }
+          current = queue.dequeue();
       }
-      const result = [];
-      do {
-          result.push([this.root.left, this.root.right])
-      } while()
   }
 }
 
@@ -57,5 +64,6 @@ tree.push(1);
 tree.push(2);
 tree.push(3);
 tree.push(0.5);
+tree.push(0.75);
 
-console.log(tree.root?.left);
+tree.traverseBFS()
