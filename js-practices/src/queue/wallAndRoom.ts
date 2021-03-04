@@ -30,23 +30,53 @@ type WNode = ReturnType<typeof createNode>
 
 const visited: { [idx: string]: WNode } = {}
 
+function inRange(v: number, [min, max]: Vec2) {
+  return v < max && v >= min
+}
+
 function getNeighbours(rooms: number[][], currentCoord: Vec2): WNode[] {
   const neighbours: WNode[] = []
-  const [curX, curY] = currentCoord
-  // console.log('visited', visited)
-  // TODO check visited
-  if (curX - 1 >= 0 && !visited[`${curX - 1}${curY}`]) {
-    neighbours.push(createNode(rooms[curX - 1][curY], [curX - 1, curY]))
+  const [curY, curX] = currentCoord
+  const m = rooms[0].length
+  const n = rooms.length
+  function isXInRange(x: number) {
+    return inRange(x, [0, m])
   }
-  if (curX + 1 < rooms[0].length && !visited[`${curX + 1}${curY}`]) {
-    console.log(curX + 1, curY, rooms[curX + 1])
-    neighbours.push(createNode(rooms[curX + 1][curY], [curX + 1, curY]))
+  function isYInRange(y: number) {
+    return inRange(y, [0, n])
   }
-  if (curY - 1 >= 0 && !visited[`${curX}${curY - 1}`]) {
-    neighbours.push(createNode(rooms[curX][curY - 1], [curX, curY - 1]))
+  function pushNode(x: number, y: number) {
+    neighbours.push(createNode(rooms[y][x], [y, x]))
   }
-  if (curY + 1 < rooms.length && !visited[`${curX}${curY + 1}`]) {
-    neighbours.push(createNode(rooms[curX][curY + 1], [curX, curY + 1]))
+
+  const leftX = curX - 1
+  const leftY = curY
+  if (isXInRange(leftX) && isYInRange(leftY) && !visited[`${leftY}${leftX}`]) {
+    pushNode(leftX, leftY)
+  }
+  const rightX = curX + 1
+  const rightY = curY
+  console.log({ rightX, rightY })
+  if (
+    !visited[`${rightY}${rightX}`] &&
+    isXInRange(rightX) &&
+    isYInRange(rightY)
+  ) {
+    pushNode(rightX, rightY)
+  }
+  const topX = curX
+  const topY = curY + 1
+  if (!visited[`${topY}${topX}`] && isXInRange(topX) && isYInRange(topY)) {
+    pushNode(topX, topY)
+  }
+  const bottomX = curX
+  const bottomY = curY - 1
+  if (
+    !visited[`${bottomY}${bottomX}`] &&
+    isXInRange(bottomX) &&
+    isYInRange(bottomY)
+  ) {
+    pushNode(bottomX, bottomY)
   }
   return neighbours
 }
@@ -58,6 +88,7 @@ function wallsAndGates(rooms: number[][]) {
   while (current) {
     visited[current.coord.join('')] = current
     const neighbours = getNeighbours(rooms, current.coord)
+    console.log('neighbours', neighbours)
     neighbours.forEach(n => {
       queue.enqueue(n)
     })
