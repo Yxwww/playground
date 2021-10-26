@@ -65,3 +65,8 @@ button:focus {
 .ProseMirror-menubar {
   min-height: 1em !important;
 }
+
+.pill {
+  border: 1px solid gray;
+  border-radius: 3px;
+}

@@ -4,116 +4,79 @@
   import { EditorView } from 'prosemirror-view';
   import { Schema, DOMParser } from 'prosemirror-model';
   import { schema } from 'prosemirror-schema-basic';
-  import { addListNodes } from 'prosemirror-schema-list';
   import { exampleSetup } from 'prosemirror-example-setup';
-  import { MenuItem } from 'prosemirror-menu';
   import { buildMenuItems } from 'prosemirror-example-setup';
+  import { UserpillView } from './UserpillView';
 
-  let editor, content;
+  let editor, content, selection;
   let view;
 
-  const mySchema = new Schema({
-    nodes: addListNodes(schema.spec.nodes, 'paragraph block*', 'block'),
-    marks: schema.spec.marks,
-  });
-  // The supported types of dinosaurs.
-  const dinos = ['brontosaurus', 'stegosaurus', 'triceratops', 'tyrannosaurus', 'pterodactyl'];
-
-  const dinoNodeSpec = {
-    // Dinosaurs have one attribute, their type, which must be one of
-    // the types defined above.
-    // Brontosaurs are still the default dino.
-    attrs: { type: { default: 'brontosaurus' } },
+  //
+  const nodeSpec = {
+    attrs: { content: '' },
     inline: true,
     group: 'inline',
     draggable: true,
-
-    // These nodes are rendered as images with a `dino-type` attribute.
-    // There are pictures for all dino types under /img/dino/.
     toDOM: (node) => [
-      'img',
+      'span',
       {
-        'dino-type': node.attrs.type,
-        src: '/img/dino/' + node.attrs.type + '.png',
-        title: node.attrs.type,
-        class: 'dinosaur',
+        class: 'userpill',
+        content: node.attrs.content,
       },
+      0,
     ],
-    // When parsing, such an image, if its type matches one of the known
-    // types, is converted to a dino node.
     parseDOM: [
       {
-        tag: 'img[dino-type]',
-        getAttrs: (dom) => {
-          let type = dom.getAttribute('dino-type');
-          return dinos.indexOf(type) > -1 ? { type } : false;
+        tag: 'span.userpill',
+        getAttrs(dom) {
+          const content = dom.getAttribute('content');
+          return {
+            content,
+          };
         },
       },
     ],
   };
-  onMount(() => {
-    console.log('mounted');
 
+  onMount(() => {
     // Mix the nodes from prosemirror-schema-list into the basic schema to
     // create a schema with list support.
 
-    const dinoSchema = new Schema({
-      nodes: schema.spec.nodes.addBefore('image', 'dino', dinoNodeSpec),
+    const editorSchema = new Schema({
+      nodes: schema.spec.nodes.addBefore('image', 'userpill', nodeSpec),
       marks: schema.spec.marks,
     });
 
-    let content = document.querySelector('#content');
-    let startDoc = DOMParser.fromSchema(dinoSchema).parse(content);
-
-    let dinoType = dinoSchema.nodes.dino;
-
-    function insertDino(type) {
-      return function (state, dispatch) {
-        let { $from } = state.selection,
-          index = $from.index();
-        if (!$from.parent.canReplaceWith(index, index, dinoType)) return false;
-        if (dispatch) dispatch(state.tr.replaceSelectionWith(dinoType.create({ type })));
-        return true;
-      };
-    }
+    let startDoc = DOMParser.fromSchema(editorSchema).parse(content);
 
     // Ask example-setup to build its basic menu
-    let menu = buildMenuItems(dinoSchema);
-    // Add a dino-inserting item for each type of dino
-    dinos.forEach((name) =>
-      menu.insertMenu.content.push(
-        new MenuItem({
-          title: 'Insert ' + name,
-          label: name.charAt(0).toUpperCase() + name.slice(1),
-          enable(state) {
-            return insertDino(name)(state);
-          },
-          run: insertDino(name),
-        }),
-      ),
-    );
+    let menu = buildMenuItems(editorSchema);
 
     view = new EditorView(editor, {
       state: EditorState.create({
         doc: startDoc,
         // Pass exampleSetup our schema and the menu we created
-        plugins: exampleSetup({ schema: dinoSchema, menuContent: menu.fullMenu }),
+        plugins: exampleSetup({ schema: editorSchema }),
       }),
+      nodeViews: {
+        userpill(node, view, getPos) {
+          console.log('create user pill?');
+          return new UserpillView(node, view, getPos);
+        },
+      },
     });
-
-    /* view = new EditorView(editor, { */
-    /*   state: EditorState.create({ */
-    /*     doc: DOMParser.fromSchema(mySchema).parse(content), */
-    /*     plugins: exampleSetup({ schema: mySchema }), */
-    /*   }), */
-    /* }) */
   });
 </script>
 
 <main>
-  <div class="editor" bind:this={editor} />
-  <div style="display: none" id="content" bind:this={content}>
-    <h1>hello world</h1>
+  <div>
+    <div class="editor" bind:this={editor} />
+    <pre>{JSON.stringify(selection, null, 2)}</pre>
+  </div>
+  <div style="display: none" bind:this={content}>
+    <p>
+      <span class="userpill" content="user1@gmail.com" />
+    </p>
   </div>
 </main>
 
