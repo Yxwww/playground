@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "prosemirror-example-setup": "^1.1.2",
+    "prosemirror-menu": "^1.1.4",
     "prosemirror-model": "^1.14.3",
     "prosemirror-schema-basic": "^1.1.2",
     "prosemirror-schema-list": "^1.1.6",
