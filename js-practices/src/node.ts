@@ -1,29 +1,26 @@
-export interface Node {
-  getValue(): number;
-  getNext(): Node | undefined;
-  setNext(v: number): void;
-  setValue(v: number): void;
+export interface Node<T> {
+  getValue(): T;
+  getNext(): Node<T> | undefined;
+  setNext(v: T): void;
+  setValue(v: T): void;
   toString(): string;
 }
 
-export function createNode(v: number): Node {
-  let value: number = v;
-  let next: undefined | Node;
+export function createNode<T>(v: T): Node<T> {
+  let value: T = v;
+  let next: undefined | Node<T>;
   return {
     getNext() {
       return next;
     },
-    setNext(v: number) {
+    setNext(v: T) {
       next = createNode(v);
     },
     getValue() {
       return value;
     },
-    setValue(v: number) {
+    setValue(v: T) {
       value = v;
-    },
-    toString() {
-      return value.toString();
     },
   };
 }

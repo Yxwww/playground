@@ -10,11 +10,12 @@ import {
   createQueueAnswer,
 } from "./queue.ts";
 
-function runTests(queueCreator: () => Queue) {
+function runTests(queueCreator: () => Queue<number>) {
   Deno.test(`${queueCreator.name} should be initialized to be empty`, () => {
     const queue = queueCreator();
     assertEquals(queue.toArray(), []);
     assertEquals(queue.length(), 0);
+    assertEquals(queue.isEmpty(), true);
   });
 
   Deno.test(`${queueCreator.name} enqueue should work as expected`, () => {
@@ -53,7 +54,7 @@ function runTests(queueCreator: () => Queue) {
   createQueueAnswer,
 ].forEach(runTests);
 
-function circularQueueTest(queueCreator: (size: number) => Queue) {
+function circularQueueTest(queueCreator: (size: number) => Queue<number>) {
   Deno.test(`${queueCreator.name} .enqueue throw when array is full`, () => {
     const circularQueue = queueCreator(3);
     circularQueue.enqueue(1);

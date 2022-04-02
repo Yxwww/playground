@@ -1,16 +1,9 @@
 import { createNode, Node } from "./node.ts";
 
-export interface Queue {
-  enqueue(v: number): void;
-  dequeue(): number | undefined;
-  toArray(): number[];
-  length(): number;
-}
 
-export function createQueue(): Queue {
-  let root: Node | undefined;
-  return {
-    length() {
+export function createQueue<T>() {
+  let root: Node<T> | undefined;
+  function  length() {
       let sum = 0;
       if (!root) {
         return 0;
@@ -18,54 +11,62 @@ export function createQueue(): Queue {
       let current = root;
       while (current) {
         sum++;
-        current = current.getNext() as Node;
+        current = current.getNext() as Node<T>;
       }
       return sum;
-    },
-
-    enqueue(v: number) {
-      if (!root) {
-        root = createNode(v);
-        return;
-      }
-      let current = root;
-      while (current.getNext()) {
-        current = current.getNext() as Node;
-        // current =
-      }
-      current.setNext(v);
-    },
-    toArray(): number[] {
-      const arr: number[] = [];
-      if (!root) {
-        return arr;
-      }
-      let current = root;
-      while (current) {
-        arr.push(current.getValue());
-        current = current.getNext() as Node;
-      }
-      return arr;
-    },
-    dequeue(): number | undefined {
-      if (!root) {
-        return;
-      }
-      const rootValue = root.getValue();
-      root = root.getNext();
-      return rootValue;
-    },
-  };
+    }
+    return {
+        length,
+        isEmpty() {
+            return length() === 0;
+        },
+        enqueue(v: T) {
+            if (!root) {
+                root = createNode(v);
+                return;
+            }
+            let current = root;
+            while (current.getNext()) {
+                current = current.getNext() as Node<T>;
+                // current =
+            }
+            current.setNext(v);
+        },
+        toArray(): T[] {
+            const arr: T[] = [];
+            if (!root) {
+                return arr;
+            }
+            let current = root;
+            while (current) {
+                arr.push(current.getValue());
+                current = current.getNext() as Node<T>;
+            }
+            return arr;
+        },
+        dequeue(): T | undefined {
+            if (!root) {
+                return;
+            }
+            const rootValue = root.getValue();
+            root = root.getNext();
+            return rootValue;
+        },
+    };
 }
 
 // Queue implementation with Dynamic array
-export function createArrayQueue(): Queue {
+export function createArrayQueue(): Queue<number> {
   let head = 0;
   let tail = 0;
   let queue: number[] = [];
-  return {
-    length() {
+  function length() {
       return queue.length - head;
+    }
+  return {
+    length,
+    isEmpty() {
+        return length() == 0;
     },
     enqueue(v: number) {
       queue[tail] = v;
@@ -108,7 +109,7 @@ export function createArrayQueue(): Queue {
  * - make sure to handle reseting T back to beginning to reset before assgining the value to index, since tail is where the next tail should go
  **/
 
-export function createCircularArrayQueue(maxLength = 100): Queue {
+export function createCircularArrayQueue(maxLength = 100): Queue<number> {
   let head = 0;
   let tail = 0;
   const queue = new Float32Array(maxLength);
@@ -125,6 +126,7 @@ export function createCircularArrayQueue(maxLength = 100): Queue {
     return length() == 0;
   }
   return {
+      isEmpty,
     enqueue(v: number) {
       if (isFull()) {
         throw new Error("queue is full");
@@ -173,7 +175,7 @@ export function createCircularArrayQueue(maxLength = 100): Queue {
  * - Queue is good to start as -1 as a initial state, becareful when to reset it back to -1 tho.
  * - (tail + 1) % size == head is a better way to check whether the queue is full
  */
-export function createQueueAnswer(size = 100): Queue {
+export function createQueueAnswer(size = 100): Queue<number> {
   let head = -1;
   let tail = -1;
   const queue = new Float32Array(size);
@@ -191,6 +193,7 @@ export function createQueueAnswer(size = 100): Queue {
   }
   return {
     length,
+    isEmpty,
     enqueue(v: number) {
       if (isFull()) {
         throw new Error("queue is full");
@@ -228,3 +231,5 @@ export function createQueueAnswer(size = 100): Queue {
     },
   };
 }
+
+export type Queue = ReturnType<typeof createQueue>;
