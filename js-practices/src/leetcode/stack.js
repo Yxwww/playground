@@ -37,7 +37,7 @@ function peek(arr) {
   * @param {string} input
   * @returns {boolean}
   */
-function checkValid(input) {
+function checkParentheses(input) {
   const stack = [];
   for (let i = 0; i < input.length; i++) {
     const c = input[i]
@@ -68,6 +68,6 @@ function checkValid(input) {
 
 }
 
-assert.equal(checkValid('{1'), false)
-assert.equal(checkValid('[{1}]'), true)
-assert.equal(checkValid('[{1}]}'), false)
+assert.equal(checkParentheses('{1'), false)
+assert.equal(checkParentheses('[{1}]'), true)
+assert.equal(checkParentheses('[{1}]}'), false)
