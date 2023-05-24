@@ -1,5 +1,6 @@
 {
-  "scripts": {
-    "format": "deno fmt src"
+  "scripts": {},
+  "devDependencies": {
+    "yuxi-scripts": "^0.0.4"
   }
 }
